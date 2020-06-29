@@ -61,9 +61,11 @@ class DqnAgent(object):
             print('target Q shape: ', target_q.shape)
             print('sample target Q: ', target_q[0])
             print('sample current Q: ', current_q[0])
-        self.q_net.fit(x=state_batch, y=target_q)
+        history = self.q_net.fit(x=state_batch, y=target_q)
+        print(history.history)
         self.save_checkpoint()
-        return 0
+        loss = history.history['loss']
+        return loss
 
     def random_policy(self, state):
         return np.random.randint(0, self.action_space)

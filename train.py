@@ -3,6 +3,7 @@ import config
 from dqn_agent import DqnAgent
 from replay_buffer import DqnReplayBuffer
 from utils import compute_avg_reward, collect_episode
+from visualizer import get_training_visualizer
 
 
 def train_model(
@@ -15,6 +16,7 @@ def train_model(
         checkpoint_location=config.default_checkpoint_location,
         model_location=config.default_model_location,
         verbose='progress',
+        visualizer_type='none',
         render=False,
 ):
     env_name = config.default_env_name
@@ -26,6 +28,7 @@ def train_model(
     benchmark_reward = compute_avg_reward(eval_env, agent.random_policy, eval_eps)
     buffer = DqnReplayBuffer(max_size=max_replay_history)
     max_avg_reward = 0.0
+    visualizer = get_training_visualizer(visualizer_type=visualizer_type)
     for eps_cnt in range(num_iterations):
         collect_episode(train_env, agent.policy, buffer, render)
         if buffer.can_sample_batch(batch_size):
@@ -33,7 +36,9 @@ def train_model(
                 batch_size=batch_size)
             loss = agent.train(state_batch=state_batch, next_state_batch=next_state_batch, action_batch=action_batch,
                                reward_batch=reward_batch, done_batch=done_batch, batch_size=batch_size)
+            visualizer.log_loss(loss=loss)
             avg_reward = compute_avg_reward(eval_env, agent.policy, eval_eps)
+            visualizer.log_reward(reward=[avg_reward])
             if avg_reward > max_avg_reward:
                 max_avg_reward = avg_reward
                 agent.save_model()
