@@ -5,11 +5,13 @@ from tensorflow.python.keras.layers import Dense
 
 
 class DqnAgent(object):
-    def __init__(self, state_space, action_space, gamma, lr, verbose):
+    def __init__(self, state_space, action_space, gamma, lr, verbose, checkpoint_location, model_location):
         self.action_space = action_space
         self.state_space = state_space
         self.gamma = gamma
         self.verbose = verbose
+        self.model_location = model_location
+        self.checkpoint_location = checkpoint_location
         if self.verbose == 'init':
             print('Construct DQN agent with: ')
             print('Action space: ')
@@ -17,6 +19,9 @@ class DqnAgent(object):
             print('State space: ')
             print(state_space)
         self.q_net = self._build_dqn_model(state_space=state_space, action_space=action_space, lr=lr)
+        self.checkpoint = tf.train.Checkpoint(step=tf.Variable(1), net=self.q_net)
+        self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, self.checkpoint_location, max_to_keep=10)
+        self.load_checkpoint()
 
     @staticmethod
     def _build_dqn_model(state_space, action_space, lr):
@@ -27,6 +32,15 @@ class DqnAgent(object):
         q_net.compile(optimizer=tf.optimizers.Adam(learning_rate=lr), loss='mse')
         q_net.summary()
         return q_net
+
+    def save_model(self):
+        tf.saved_model.save(self.q_net, self.model_location)
+
+    def save_checkpoint(self):
+        self.checkpoint_manager.save()
+
+    def load_checkpoint(self):
+        self.checkpoint.restore(self.checkpoint_manager.latest_checkpoint)
 
     def train(self, state_batch, next_state_batch, action_batch, reward_batch, done_batch, batch_size):
         current_q = self.q_net(state_batch).numpy()
@@ -47,9 +61,8 @@ class DqnAgent(object):
             print('target Q shape: ', target_q.shape)
             print('sample target Q: ', target_q[0])
             print('sample current Q: ', current_q[0])
-        # loss = self.q_net.train_on_batch(x=state_batch, y=target_q)
-        # return loss
         self.q_net.fit(x=state_batch, y=target_q)
+        self.save_checkpoint()
         return 0
 
     def random_policy(self, state):

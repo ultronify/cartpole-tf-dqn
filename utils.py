@@ -1,22 +1,9 @@
-def collect_steps(env, policy, buffer, max_steps):
-    state = env.reset()
-    for step_cnt in range(max_steps):
-        action = policy(state)
-        next_state, reward, done, _ = env.step(action)
-        if done:
-            reward = -1.0
-        buffer.record(state, reward, next_state, action, done)
-        if done:
-            state = env.reset()
-        else:
-            state = next_state
-
-
-def collect_episode(env, policy, buffer):
+def collect_episode(env, policy, buffer, render):
     state = env.reset()
     done = False
     while not done:
-        env.render()
+        if render:
+            env.render()
         action = policy(state)
         next_state, reward, done, _ = env.step(action)
         if done:

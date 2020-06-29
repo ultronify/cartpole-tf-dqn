@@ -6,3 +6,5 @@ default_max_replay_history = 100000
 default_gamma = 0.95
 default_eval_eps = 10
 default_learning_rate = 0.001
+default_checkpoint_location = './checkpoints'
+default_model_location = './model'
