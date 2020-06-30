@@ -1,11 +1,11 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
-
 name: Regression
-
 on:
+  schedule:
+    - cron: '0 */6 * * *'
   pull_request:
-    branches: [ master ]
-
+    branches: 
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
