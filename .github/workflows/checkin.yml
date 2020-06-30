@@ -4,12 +4,19 @@ name: Checkin
 
 on:
   push:
-    branches: [ master, feature/*, fix/*, refactor/*, chore/*, release/*, dev/* ]
+    branches: 
+      - master
+      - feature/*
+      - fix/*
+      - refactor/*
+      - chore/*
+      - release/*
+      - dev/*
   pull_request:
-    branches: [ master ]
-
+    branches:
+      - master
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
