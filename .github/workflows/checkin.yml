@@ -1,6 +1,6 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 
-name: Run tests
+name: Checkin
 
 on:
   push:
@@ -23,7 +23,9 @@ jobs:
         pip install -r requirements.txt
     - name: Lint
       run: |
-        echo "lint"
+        pylint \
+          train.py train_test.py dqn_agent.py entrypoint.py replay_buffer.py utils.py visualizer.py
     - name: Test
       run: |
-        echo "test"
+        python -m unittest \
+          train_test.TestTrain.test_sanity_check

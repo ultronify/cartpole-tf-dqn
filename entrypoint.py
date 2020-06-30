@@ -4,17 +4,24 @@ from train import train_model
 
 
 def main():
-    parser = argparse.ArgumentParser(description='CLI for Cart Pole RL Demonstration.')
-    parser.add_argument('--verbose', dest='verbose', type=str, default='progress',
+    parser = argparse.ArgumentParser(
+        description='CLI for Cart Pole RL Demonstration.')
+    parser.add_argument('--verbose', dest='verbose', type=str,
+                        default='progress',
                         choices=['progress', 'loss', 'policy', 'init'],
-                        help='If logging information should show up in the terminal.')
-    parser.add_argument('--visualizer_type', dest='visualizer_type', type=str, default='none',
+                        help='If logging information should show up in the '
+                             'terminal.')
+    parser.add_argument('--visualizer_type', dest='visualizer_type', type=str,
+                        default='none',
                         choices=['none', 'stream_lit'],
-                        help='Which type of visualizer to use for training progress.')
+                        help='Which type of visualizer to use for training '
+                             'progress.')
     parser.add_argument('--batch_size', dest='batch_size', type=int, default=32,
                         help='The batch size of training.')
-    parser.add_argument('--num_iterations', dest='num_iterations', type=int, default=2000,
-                        help='The number of episodes the agent should train on.')
+    parser.add_argument('--num_iterations', dest='num_iterations', type=int,
+                        default=2000,
+                        help='The number of episodes the '
+                             'agent should train on.')
     args = parser.parse_args()
     train_model(
         verbose=args.verbose,

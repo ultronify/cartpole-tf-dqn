@@ -12,9 +12,11 @@ class TestTrain(unittest.TestCase):
             visualizer_type='none',
             persist_progress=False,
         )
-        print('Final best reward achieved is {0} against benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
-        self.assertTrue(max_avg_reward > 0.0)
-        self.assertTrue(benchmark_reward > 0.0)
+        print(
+            'Final best reward achieved is {0} against'
+            'benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
+        assert (max_avg_reward > 0.0)
+        assert (benchmark_reward > 0.0)
 
     def test_training_effectiveness(self):
         max_avg_reward, benchmark_reward = train_model(
@@ -24,8 +26,10 @@ class TestTrain(unittest.TestCase):
             visualizer_type='none',
             persist_progress=False,
         )
-        print('Final best reward achieved is {0} against benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
-        self.assertTrue(max_avg_reward > benchmark_reward)
+        print(
+            'Final best reward achieved is {0} against'
+            ' benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
+        assert (max_avg_reward > benchmark_reward)
 
 
 if __name__ == '__main__':

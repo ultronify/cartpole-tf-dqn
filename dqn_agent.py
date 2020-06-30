@@ -5,7 +5,8 @@ from tensorflow.python.keras.layers import Dense
 
 
 class DqnAgent(object):
-    def __init__(self, state_space, action_space, gamma, lr, verbose, checkpoint_location, model_location, persist_progress):
+    def __init__(self, state_space, action_space, gamma, lr, verbose,
+                 checkpoint_location, model_location, persist_progress):
         self.action_space = action_space
         self.state_space = state_space
         self.gamma = gamma
@@ -19,19 +20,25 @@ class DqnAgent(object):
             print(action_space)
             print('State space: ')
             print(state_space)
-        self.q_net = self._build_dqn_model(state_space=state_space, action_space=action_space, lr=lr)
-        self.checkpoint = tf.train.Checkpoint(step=tf.Variable(1), net=self.q_net)
-        self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, self.checkpoint_location, max_to_keep=10)
+        self.q_net = self._build_dqn_model(state_space=state_space,
+                                           action_space=action_space, lr=lr)
+        self.checkpoint = tf.train.Checkpoint(step=tf.Variable(1),
+                                              net=self.q_net)
+        self.checkpoint_manager = tf.train.CheckpointManager(
+            self.checkpoint, self.checkpoint_location, max_to_keep=10)
         if self.persist_progress:
             self.load_checkpoint()
 
     @staticmethod
     def _build_dqn_model(state_space, action_space, lr):
         q_net = Sequential()
-        q_net.add(Dense(128, input_dim=state_space, activation='relu', kernel_initializer='he_uniform'))
+        q_net.add(Dense(128, input_dim=state_space, activation='relu',
+                        kernel_initializer='he_uniform'))
         q_net.add(Dense(64, activation='relu', kernel_initializer='he_uniform'))
-        q_net.add(Dense(action_space, activation='linear', kernel_initializer='he_uniform'))
-        q_net.compile(optimizer=tf.optimizers.Adam(learning_rate=lr), loss='mse')
+        q_net.add(Dense(action_space, activation='linear',
+                        kernel_initializer='he_uniform'))
+        q_net.compile(optimizer=tf.optimizers.Adam(learning_rate=lr),
+                      loss='mse')
         q_net.summary()
         return q_net
 
@@ -44,17 +51,19 @@ class DqnAgent(object):
     def load_checkpoint(self):
         self.checkpoint.restore(self.checkpoint_manager.latest_checkpoint)
 
-    def train(self, state_batch, next_state_batch, action_batch, reward_batch, done_batch, batch_size):
+    def train(self, state_batch, next_state_batch, action_batch, reward_batch,
+              done_batch, batch_size):
         current_q = self.q_net(state_batch).numpy()
         target_q = np.copy(current_q)
         next_q = self.q_net(next_state_batch)
         max_next_q = np.amax(next_q, axis=1)
         for batch_idx in range(batch_size):
             if done_batch[batch_idx]:
-                target_q[batch_idx][action_batch[batch_idx]] = reward_batch[batch_idx]
+                target_q[batch_idx][action_batch[batch_idx]] = \
+                    reward_batch[batch_idx]
             else:
-                target_q[batch_idx][action_batch[batch_idx]] = reward_batch[batch_idx] + self.gamma * max_next_q[
-                    batch_idx]
+                target_q[batch_idx][action_batch[batch_idx]] = \
+                    reward_batch[batch_idx] + self.gamma * max_next_q[batch_idx]
         if self.verbose == 'loss':
             print('reward batch shape: ', reward_batch.shape)
             print('next Q shape: ', next_q.shape)

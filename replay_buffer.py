@@ -30,5 +30,5 @@ class DqnReplayBuffer(object):
             action_batch.append(record[2])
             reward_batch.append(record[3])
             done_batch.append(record[4])
-        return np.array(state_batch), np.array(next_state_batch), np.array(action_batch), np.array(
-            reward_batch), np.array(done_batch)
+        return np.array(state_batch), np.array(next_state_batch), np.array(
+            action_batch), np.array(reward_batch), np.array(done_batch)

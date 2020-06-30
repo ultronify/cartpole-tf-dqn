@@ -6,7 +6,7 @@ def get_training_visualizer(visualizer_type):
         return DummyTrainingVisualizer()
     if visualizer_type == 'stream_lit':
         return StreamLitTrainingVisualizer()
-    raise RuntimeError('Training visualizer of type {0} not found'.format(type))
+    raise RuntimeError('Visualizer of type {0} not found'.format(type))
 
 
 class TrainingVisualizer(ABC):
