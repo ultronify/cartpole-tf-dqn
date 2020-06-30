@@ -39,7 +39,7 @@ class TestTrain(unittest.TestCase):
         :return: None
         """
         max_avg_reward, benchmark_reward = train_model(
-            num_iterations=400,
+            num_iterations=600,
             batch_size=512,
             verbose='progress',
             visualizer_type='none',
