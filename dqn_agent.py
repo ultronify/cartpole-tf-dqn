@@ -5,10 +5,11 @@ from tensorflow.python.keras.layers import Dense
 
 
 class DqnAgent(object):
-    def __init__(self, state_space, action_space, gamma, lr, verbose, checkpoint_location, model_location):
+    def __init__(self, state_space, action_space, gamma, lr, verbose, checkpoint_location, model_location, persist_progress):
         self.action_space = action_space
         self.state_space = state_space
         self.gamma = gamma
+        self.persist_progress = persist_progress
         self.verbose = verbose
         self.model_location = model_location
         self.checkpoint_location = checkpoint_location
@@ -21,7 +22,8 @@ class DqnAgent(object):
         self.q_net = self._build_dqn_model(state_space=state_space, action_space=action_space, lr=lr)
         self.checkpoint = tf.train.Checkpoint(step=tf.Variable(1), net=self.q_net)
         self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, self.checkpoint_location, max_to_keep=10)
-        self.load_checkpoint()
+        if self.persist_progress:
+            self.load_checkpoint()
 
     @staticmethod
     def _build_dqn_model(state_space, action_space, lr):
@@ -62,8 +64,8 @@ class DqnAgent(object):
             print('sample target Q: ', target_q[0])
             print('sample current Q: ', current_q[0])
         history = self.q_net.fit(x=state_batch, y=target_q)
-        print(history.history)
-        self.save_checkpoint()
+        if self.persist_progress:
+            self.save_checkpoint()
         loss = history.history['loss']
         return loss
 

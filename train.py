@@ -18,13 +18,14 @@ def train_model(
         verbose='progress',
         visualizer_type='none',
         render=False,
+        persist_progress=True,
 ):
     env_name = config.default_env_name
     train_env = gym.make(env_name)
     eval_env = gym.make(env_name)
     agent = DqnAgent(state_space=train_env.observation_space.shape[0], action_space=train_env.action_space.n,
                      gamma=gamma, verbose=verbose, lr=learning_rate, checkpoint_location=checkpoint_location,
-                     model_location=model_location)
+                     model_location=model_location, persist_progress=persist_progress)
     benchmark_reward = compute_avg_reward(eval_env, agent.random_policy, eval_eps)
     buffer = DqnReplayBuffer(max_size=max_replay_history)
     max_avg_reward = 0.0
@@ -41,7 +42,8 @@ def train_model(
             visualizer.log_reward(reward=[avg_reward])
             if avg_reward > max_avg_reward:
                 max_avg_reward = avg_reward
-                agent.save_model()
+                if persist_progress:
+                    agent.save_model()
             if verbose != 'none':
                 print(
                     'Episode {0}/{1}({2}%) finished with avg reward {3} w/ benchmark reward {4} and '
@@ -54,3 +56,4 @@ def train_model(
                 print('Not enough sample, skipping...')
     train_env.close()
     eval_env.close()
+    return max_avg_reward, benchmark_reward
