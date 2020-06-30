@@ -1,4 +1,19 @@
+"""
+Utilities
+"""
+
+
 def collect_episode(env, policy, buffer, render):
+    """
+    Collect steps from a single episode play and record
+    with replay buffer
+
+    :param env: OpenAI gym environment
+    :param policy: DQN agent policy
+    :param buffer: reinforcement learning replay buffer
+    :param render: (bool) if should render the game play
+    :return:
+    """
     state = env.reset()
     done = False
     while not done:
@@ -13,6 +28,14 @@ def collect_episode(env, policy, buffer, render):
 
 
 def compute_avg_reward(env, policy, num_episodes):
+    """
+    Compute the average reward across num_episodes under policy
+
+    :param env: OpenAI gym environment
+    :param policy: DQN agent policy
+    :param num_episodes: the number of episode to take average from
+    :return: (int) average reward
+    """
     total_return = 0.0
     for _ in range(num_episodes):
         state = env.reset()

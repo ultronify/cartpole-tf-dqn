@@ -1,10 +1,13 @@
-default_env_name = 'CartPole-v0'
-default_num_iterations = 20000
-default_collect_steps_per_iteration = 10
-default_batch_size = 512
-default_max_replay_history = 100000
-default_gamma = 0.95
-default_eval_eps = 10
-default_learning_rate = 0.001
-default_checkpoint_location = './checkpoints'
-default_model_location = './model'
+"""
+Config
+"""
+
+DEFAULT_ENV_NAME = 'CartPole-v0'
+DEFAULT_NUM_ITERATIONS = 20000
+DEFAULT_BATCH_SIZE = 512
+DEFAULT_MAX_REPLAY_HISTORY = 100000
+DEFAULT_GAMMA = 0.95
+DEFAULT_EVAL_EPS = 10
+DEFAULT_LEARNING_RATE = 0.001
+DEFAULT_CHECKPOINT_LOCATION = './checkpoints'
+DEAFULT_MODEL_LOCATION = './model'

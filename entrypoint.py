@@ -1,9 +1,18 @@
+"""
+Entrypoint (CLI)
+"""
+
 import argparse
 
 from train import train_model
 
 
 def main():
+    """
+    The CLI entrypoint to the APIs
+
+    :return: None
+    """
     parser = argparse.ArgumentParser(
         description='CLI for Cart Pole RL Demonstration.')
     parser.add_argument('--verbose', dest='verbose', type=str,
@@ -13,7 +22,7 @@ def main():
                              'terminal.')
     parser.add_argument('--visualizer_type', dest='visualizer_type', type=str,
                         default='none',
-                        choices=['none', 'stream_lit'],
+                        choices=['none', 'streamlit'],
                         help='Which type of visualizer to use for training '
                              'progress.')
     parser.add_argument('--batch_size', dest='batch_size', type=int, default=32,

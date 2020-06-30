@@ -12,14 +12,14 @@ from visualizer import get_training_visualizer
 
 # pylint: disable=too-many-arguments,too-many-locals
 def train_model(
-        num_iterations=config.default_num_iterations,
-        batch_size=config.default_batch_size,
-        max_replay_history=config.default_max_replay_history,
-        gamma=config.default_gamma,
-        eval_eps=config.default_eval_eps,
-        learning_rate=config.default_learning_rate,
-        checkpoint_location=config.default_checkpoint_location,
-        model_location=config.default_model_location,
+        num_iterations=config.DEFAULT_NUM_ITERATIONS,
+        batch_size=config.DEFAULT_BATCH_SIZE,
+        max_replay_history=config.DEFAULT_MAX_REPLAY_HISTORY,
+        gamma=config.DEFAULT_GAMMA,
+        eval_eps=config.DEFAULT_EVAL_EPS,
+        learning_rate=config.DEFAULT_LEARNING_RATE,
+        checkpoint_location=config.DEFAULT_CHECKPOINT_LOCATION,
+        model_location=config.DEAFULT_MODEL_LOCATION,
         verbose='progress',
         visualizer_type='none',
         render=False,
@@ -43,7 +43,7 @@ def train_model(
 
     :return: (maximum average reward, baseline average reward)
     """
-    env_name = config.default_env_name
+    env_name = config.DEFAULT_ENV_NAME
     train_env = gym.make(env_name)
     eval_env = gym.make(env_name)
     agent = DqnAgent(state_space=train_env.observation_space.shape[0],
