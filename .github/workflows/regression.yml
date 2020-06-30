@@ -1,10 +1,8 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 
-name: Checkin
+name: Regression
 
 on:
-  push:
-    branches: [ master, feature/*, fix/*, refactor/*, chore/*, release/*, dev/* ]
   pull_request:
     branches: [ master ]
 
@@ -21,11 +19,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Lint
-      run: |
-        pylint \
-          train.py train_test.py dqn_agent.py entrypoint.py replay_buffer.py utils.py visualizer.py
-    - name: Test
+    - name: Regression test
       run: |
         python -m unittest \
-          train_test.TestTrain.test_sanity_check
+          train_test.TestTrain.test_training_effectiveness
