@@ -19,11 +19,11 @@ def train_model(
         eval_eps=config.DEFAULT_EVAL_EPS,
         learning_rate=config.DEFAULT_LEARNING_RATE,
         checkpoint_location=config.DEFAULT_CHECKPOINT_LOCATION,
-        model_location=config.DEAFULT_MODEL_LOCATION,
-        verbose='progress',
-        visualizer_type='none',
-        render=False,
-        persist_progress=True,
+        model_location=config.DEFAULT_MODEL_LOCATION,
+        verbose=config.DEFAULT_VERBOSITY_OPTION,
+        visualizer_type=config.DEFAULT_VISUALIZER_TYPE,
+        render_option=config.DEFAULT_RENDER_OPTION,
+        persist_progress_option=config.DEFAULT_PERSIST_PROGRESS_OPTION,
 ):
     """
     Trains a DQN agent by playing episodes of the Cart Pole game
@@ -38,8 +38,8 @@ def train_model(
     :param model_location: the location to save the pre-trained models
     :param verbose: the verbosity level which can be progress, loss, policy and init
     :param visualizer_type: the type of visualization to be used
-    :param render: if the game play should be rendered
-    :param persist_progress: if the training progress should be saved
+    :param render_option: if the game play should be rendered
+    :param persist_progress_option: if the training progress should be saved
 
     :return: (maximum average reward, baseline average reward)
     """
@@ -51,14 +51,14 @@ def train_model(
                      gamma=gamma, verbose=verbose, lr=learning_rate,
                      checkpoint_location=checkpoint_location,
                      model_location=model_location,
-                     persist_progress=persist_progress)
+                     persist_progress_option=persist_progress_option)
     benchmark_reward = compute_avg_reward(eval_env, agent.random_policy,
                                           eval_eps)
     buffer = DqnReplayBuffer(max_size=max_replay_history)
     max_avg_reward = 0.0
     visualizer = get_training_visualizer(visualizer_type=visualizer_type)
     for eps_cnt in range(num_iterations):
-        collect_episode(train_env, agent.policy, buffer, render)
+        collect_episode(train_env, agent.policy, buffer, render_option)
         if buffer.can_sample_batch(batch_size):
             state_batch, next_state_batch, action_batch, reward_batch, done_batch = \
                 buffer.sample_batch(batch_size=batch_size)
@@ -72,7 +72,7 @@ def train_model(
             visualizer.log_reward(reward=[avg_reward])
             if avg_reward > max_avg_reward:
                 max_avg_reward = avg_reward
-                if persist_progress:
+                if persist_progress_option == 'all':
                     agent.save_model()
             if verbose != 'none':
                 print(

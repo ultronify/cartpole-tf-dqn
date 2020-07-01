@@ -6,7 +6,7 @@
     <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
     <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="INDEPENDENT_INTERPRETER_PATH" value="false" />
-    <option name="INTERPRETER_PATH" value="$PROJECT_DIR$/../../Development/venv/rlenv/Scripts/streamlit.exe" />
+    <option name="INTERPRETER_PATH" value="$PROJECT_DIR$/venv/Scripts/streamlit.exe" />
     <option name="INTERPRETER_OPTIONS" value="run" />
     <method v="2" />
   </configuration>

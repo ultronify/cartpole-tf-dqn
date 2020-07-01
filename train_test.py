@@ -23,7 +23,7 @@ class TestTrain(unittest.TestCase):
             batch_size=3,
             verbose='none',
             visualizer_type='none',
-            persist_progress=False,
+            persist_progress_option='none',
         )
         print(
             'Final best reward achieved is {0} against'
@@ -43,7 +43,7 @@ class TestTrain(unittest.TestCase):
             batch_size=512,
             verbose='progress',
             visualizer_type='none',
-            persist_progress=False,
+            persist_progress_option='none',
         )
         print(
             'Final best reward achieved is {0} against'

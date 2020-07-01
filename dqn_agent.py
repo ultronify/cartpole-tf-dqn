@@ -16,11 +16,11 @@ class DqnAgent:
 
     # pylint: disable=too-many-arguments
     def __init__(self, state_space, action_space, gamma, lr, verbose,
-                 checkpoint_location, model_location, persist_progress):
+                 checkpoint_location, model_location, persist_progress_option):
         self.action_space = action_space
         self.state_space = state_space
         self.gamma = gamma
-        self.persist_progress = persist_progress
+        self.persist_progress_option = persist_progress_option
         self.verbose = verbose
         self.model_location = model_location
         self.checkpoint_location = checkpoint_location
@@ -36,7 +36,7 @@ class DqnAgent:
                                               net=self.q_net)
         self.checkpoint_manager = tf.train.CheckpointManager(
             self.checkpoint, self.checkpoint_location, max_to_keep=10)
-        if self.persist_progress:
+        if self.persist_progress_option == 'all':
             self.load_checkpoint()
 
     @staticmethod
@@ -117,7 +117,7 @@ class DqnAgent:
             print('sample target Q: ', target_q[0])
             print('sample current Q: ', current_q[0])
         history = self.q_net.fit(x=state_batch, y=target_q)
-        if self.persist_progress:
+        if self.persist_progress_option == 'all':
             self.save_checkpoint()
         loss = history.history['loss']
         return loss
