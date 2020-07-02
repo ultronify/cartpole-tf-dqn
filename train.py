@@ -18,6 +18,7 @@ def train_model(
         gamma=config.DEFAULT_GAMMA,
         eval_eps=config.DEFAULT_EVAL_EPS,
         learning_rate=config.DEFAULT_LEARNING_RATE,
+        target_network_update_frequency=config.DEFAULT_TARGET_NETWORK_UPDATE_FREQUENCY,
         checkpoint_location=config.DEFAULT_CHECKPOINT_LOCATION,
         model_location=config.DEFAULT_MODEL_LOCATION,
         verbose=config.DEFAULT_VERBOSITY_OPTION,
@@ -28,6 +29,7 @@ def train_model(
     """
     Trains a DQN agent by playing episodes of the Cart Pole game
 
+    :param target_network_update_frequency: how frequent target Q network gets updates
     :param num_iterations: the number of episodes the agent will play
     :param batch_size: the training batch size
     :param max_replay_history: the limit of the replay buffer length
@@ -84,6 +86,8 @@ def train_model(
         else:
             if verbose != 'none':
                 print('Not enough sample, skipping...')
+        if eps_cnt % target_network_update_frequency == 0:
+            agent.update_target_network()
     train_env.close()
     eval_env.close()
     return max_avg_reward, benchmark_reward

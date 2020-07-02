@@ -2,22 +2,32 @@
 Config
 """
 
+DEFAULT_MODE = 'train'
+"""
+The default mode the program should run in
+"""
+
+MODE_OPTIONS = ['train', 'test']
+"""
+The supported modes
+"""
+
 DEFAULT_ENV_NAME = 'CartPole-v0'
 """
 The OpenAI environment name to be used
 """
 
-DEFAULT_NUM_ITERATIONS = 20000
+DEFAULT_NUM_ITERATIONS = 50000
 """
 The default number of iteration to train the model
 """
 
-DEFAULT_BATCH_SIZE = 512
+DEFAULT_BATCH_SIZE = 128
 """
 The default batch size the model should be trained on
 """
 
-DEFAULT_MAX_REPLAY_HISTORY = 100000
+DEFAULT_MAX_REPLAY_HISTORY = 1000000
 """
 The default max length of the replay buffer
 """
@@ -45,6 +55,12 @@ The default location to store the training checkpoints
 DEFAULT_MODEL_LOCATION = './model'
 """
 The default location to store the best performing models
+"""
+
+DEFAULT_TARGET_NETWORK_UPDATE_FREQUENCY = 200
+"""
+How often the target Q network should get parameter update
+from the training Q network.
 """
 
 DEFAULT_RENDER_OPTION = 'none'

@@ -32,12 +32,15 @@ class DqnAgent:
             print(state_space)
         self.q_net = self._build_dqn_model(state_space=state_space,
                                            action_space=action_space, learning_rate=lr)
+        self.target_q_net = self._build_dqn_model(state_space=state_space,
+                                                  action_space=action_space, learning_rate=lr)
         self.checkpoint = tf.train.Checkpoint(step=tf.Variable(1),
                                               net=self.q_net)
         self.checkpoint_manager = tf.train.CheckpointManager(
             self.checkpoint, self.checkpoint_location, max_to_keep=10)
         if self.persist_progress_option == 'all':
             self.load_checkpoint()
+            self.update_target_network()
 
     @staticmethod
     def _build_dqn_model(state_space, action_space, learning_rate):
@@ -84,6 +87,17 @@ class DqnAgent:
         """
         self.checkpoint.restore(self.checkpoint_manager.latest_checkpoint)
 
+    def update_target_network(self):
+        """
+        Updates the target Q network with the parameters
+        from the currently trained Q network.
+
+        :return: None
+        """
+        if self.verbose != 'none':
+            print('Update target Q network')
+        self.target_q_net.set_weights(self.q_net.get_weights())
+
     def train(self, state_batch, next_state_batch, action_batch, reward_batch,
               done_batch, batch_size):
         """
@@ -99,7 +113,7 @@ class DqnAgent:
         """
         current_q = self.q_net(state_batch).numpy()
         target_q = np.copy(current_q)
-        next_q = self.q_net(next_state_batch)
+        next_q = self.target_q_net(next_state_batch)
         max_next_q = np.amax(next_q, axis=1)
         for batch_idx in range(batch_size):
             if done_batch[batch_idx]:
@@ -116,7 +130,7 @@ class DqnAgent:
             print('target Q shape: ', target_q.shape)
             print('sample target Q: ', target_q[0])
             print('sample current Q: ', current_q[0])
-        history = self.q_net.fit(x=state_batch, y=target_q)
+        history = self.q_net.fit(x=state_batch, y=target_q, verbose=0)
         if self.persist_progress_option == 'all':
             self.save_checkpoint()
         loss = history.history['loss']

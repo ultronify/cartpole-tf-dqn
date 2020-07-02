@@ -16,6 +16,10 @@ def main():
     """
     parser = argparse.ArgumentParser(
         description='CLI for Cart Pole DQN with TensorFlow 2.0.')
+    parser.add_argument('--mode', dest='mode', type=str,
+                        default=config.DEFAULT_MODE,
+                        choices=config.MODE_OPTIONS,
+                        help='The mode the program should execute.')
     parser.add_argument('--num_iterations', dest='num_iterations', type=int,
                         default=config.DEFAULT_NUM_ITERATIONS,
                         help='The number of episodes the '
@@ -35,6 +39,9 @@ def main():
     parser.add_argument('--learning_rate', dest='learning_rate', type=float,
                         default=config.DEFAULT_LEARNING_RATE,
                         help='Learning rate for training.')
+    parser.add_argument('--target_network_update_frequency', dest='target_network_update_frequency',
+                        type=float, default=config.DEFAULT_TARGET_NETWORK_UPDATE_FREQUENCY,
+                        help='How often the target Q network should update.')
     parser.add_argument('--checkpoint_location', dest='checkpoint_location', type=str,
                         default=config.DEFAULT_CHECKPOINT_LOCATION,
                         help='The location for storing training checkpoints.')
@@ -60,23 +67,27 @@ def main():
                         choices=config.PERSIST_PROGRESS_OPTIONS,
                         help='How the training should be persisted.')
     args = parser.parse_args()
-    max_avg_reward, benchmark_reward = train_model(
-        num_iterations=args.num_iterations,
-        batch_size=args.batch_size,
-        max_replay_history=args.max_replay_history,
-        gamma=args.gamma,
-        eval_eps=args.eval_eps,
-        learning_rate=args.learning_rate,
-        checkpoint_location=args.checkpoint_location,
-        model_location=args.model_location,
-        verbose=args.verbose,
-        visualizer_type=args.visualizer_type,
-        render_option=args.render_option,
-        persist_progress_option=args.persist_progress_option
-    )
-    print(
-        'Final best reward achieved is {0} against'
-        'benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
+    if args.mode == 'train':
+        max_avg_reward, benchmark_reward = train_model(
+            num_iterations=args.num_iterations,
+            batch_size=args.batch_size,
+            max_replay_history=args.max_replay_history,
+            gamma=args.gamma,
+            eval_eps=args.eval_eps,
+            learning_rate=args.learning_rate,
+            target_network_update_frequency=args.target_network_update_frequency,
+            checkpoint_location=args.checkpoint_location,
+            model_location=args.model_location,
+            verbose=args.verbose,
+            visualizer_type=args.visualizer_type,
+            render_option=args.render_option,
+            persist_progress_option=args.persist_progress_option
+        )
+        print(
+            'Final best reward achieved is {0} against'
+            'benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
+    if args.mode == 'test':
+        raise NotImplementedError('coming soon')
 
 
 if __name__ == '__main__':

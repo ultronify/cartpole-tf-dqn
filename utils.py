@@ -3,6 +3,29 @@ Utilities
 """
 
 
+def collect_steps(env, policy, buffer, render_option, current_state, n_steps):
+    """
+    Collects a single step from the game environment with policy specified
+
+    :param env: OpenAI gym environment
+    :param policy: DQN agent policy
+    :param buffer: reinforcement learning replay buffer
+    :param render_option: (bool) if should render the game play
+    :return: None
+    """
+    state = current_state
+    for _ in range(n_steps):
+        action = policy(state)
+        next_state, reward, done, _ = env.step(action)
+        if done:
+            reward = -1.0
+            state = env.reset()
+        else:
+            state = next_state
+        buffer.record(state, reward, next_state, action, done)
+    return state
+
+
 def collect_episode(env, policy, buffer, render_option):
     """
     Collect steps from a single episode play and record
@@ -12,7 +35,7 @@ def collect_episode(env, policy, buffer, render_option):
     :param policy: DQN agent policy
     :param buffer: reinforcement learning replay buffer
     :param render_option: (bool) if should render the game play
-    :return:
+    :return: None
     """
     state = env.reset()
     done = False
