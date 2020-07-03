@@ -53,7 +53,8 @@ def train_model(
                      gamma=gamma, verbose=verbose, lr=learning_rate,
                      checkpoint_location=checkpoint_location,
                      model_location=model_location,
-                     persist_progress_option=persist_progress_option)
+                     persist_progress_option=persist_progress_option,
+                     mode='train')
     benchmark_reward = compute_avg_reward(eval_env, agent.random_policy,
                                           eval_eps)
     buffer = DqnReplayBuffer(max_size=max_replay_history)

@@ -1,10 +1,14 @@
 """
 Entrypoint (CLI)
+
+This module is responsible for collecting the CLI inputs (the arguments) and
+pass them into the underlying modules for execution.
 """
 
 import argparse
 
 import config
+from play import test_model
 from train import train_model
 
 
@@ -66,6 +70,12 @@ def main():
                         type=str, default=config.DEFAULT_PERSIST_PROGRESS_OPTION,
                         choices=config.PERSIST_PROGRESS_OPTIONS,
                         help='How the training should be persisted.')
+    parser.add_argument('--pause_time', dest='pause_time', type=int,
+                        default=config.DEFAULT_PAUSE_TIME,
+                        help='The time that should pause to start recording.')
+    parser.add_argument('--min_steps', dest='min_steps', type=int,
+                        default=config.DEFAULT_MIN_STEPS,
+                        help='The minimum steps a agent should be evaluate on per episode.')
     args = parser.parse_args()
     if args.mode == 'train':
         max_avg_reward, benchmark_reward = train_model(
@@ -81,13 +91,22 @@ def main():
             verbose=args.verbose,
             visualizer_type=args.visualizer_type,
             render_option=args.render_option,
-            persist_progress_option=args.persist_progress_option
+            persist_progress_option=args.persist_progress_option,
         )
         print(
             'Final best reward achieved is {0} against'
             'benchmark reward {1}'.format(max_avg_reward, benchmark_reward))
     if args.mode == 'test':
-        raise NotImplementedError('coming soon')
+        avg_reward = test_model(
+            model_location=args.model_location,
+            verbose=args.verbose,
+            eval_eps=args.eval_eps,
+            render_option=args.render_option,
+            persist_progress_option=args.persist_progress_option,
+            pause_time=args.pause_time,
+            min_steps=args.min_steps,
+        )
+        print('Final average score is {0}'.format(avg_reward))
 
 
 if __name__ == '__main__':
