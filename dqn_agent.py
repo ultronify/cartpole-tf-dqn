@@ -16,11 +16,12 @@ class DqnAgent:
 
     # pylint: disable=too-many-arguments
     def __init__(self, state_space, action_space, gamma, lr, verbose,
-                 checkpoint_location, model_location, persist_progress_option, mode):
+                 checkpoint_location, model_location, persist_progress_option, mode, epsilon):
         self.action_space = action_space
         self.mode = mode
         self.state_space = state_space
         self.gamma = gamma
+        self.epsilon = epsilon
         self.persist_progress_option = persist_progress_option
         self.verbose = verbose
         self.model_location = model_location
@@ -156,6 +157,18 @@ class DqnAgent:
         :return: action
         """
         return np.random.randint(0, self.action_space)
+
+    def collect_policy(self, state):
+        """
+        The policy for collecting data points which can contain some randomness to
+        encourage exploration.
+
+        :return: action
+        """
+        if np.random.random() < self.epsilon:
+            return self.random_policy(state=state)
+        else:
+            return self.policy(state=state)
 
     def policy(self, state):
         """

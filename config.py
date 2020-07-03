@@ -37,6 +37,11 @@ DEFAULT_GAMMA = 0.95
 The default discount rate for the Q learning
 """
 
+DEFAULT_EPSILON = 0.05
+"""
+The default value for epsilon
+"""
+
 DEFAULT_EVAL_EPS = 10
 """
 The default number of episode the model should be evaluated with
@@ -57,7 +62,7 @@ DEFAULT_MODEL_LOCATION = './model'
 The default location to store the best performing models
 """
 
-DEFAULT_TARGET_NETWORK_UPDATE_FREQUENCY = 200
+DEFAULT_TARGET_NETWORK_UPDATE_FREQUENCY = 120
 """
 How often the target Q network should get parameter update
 from the training Q network.

@@ -25,6 +25,7 @@ def train_model(
         visualizer_type=config.DEFAULT_VISUALIZER_TYPE,
         render_option=config.DEFAULT_RENDER_OPTION,
         persist_progress_option=config.DEFAULT_PERSIST_PROGRESS_OPTION,
+        epsilon=config.DEFAULT_EPSILON,
 ):
     """
     Trains a DQN agent by playing episodes of the Cart Pole game
@@ -45,6 +46,10 @@ def train_model(
 
     :return: (maximum average reward, baseline average reward)
     """
+    visualizer = get_training_visualizer(visualizer_type=visualizer_type)
+    use_epsilon = epsilon
+    if visualizer_type == 'streamlit':
+        use_epsilon = visualizer.get_ui_feedback()['epsilon']
     env_name = config.DEFAULT_ENV_NAME
     train_env = gym.make(env_name)
     eval_env = gym.make(env_name)
@@ -54,14 +59,14 @@ def train_model(
                      checkpoint_location=checkpoint_location,
                      model_location=model_location,
                      persist_progress_option=persist_progress_option,
-                     mode='train')
+                     mode='train',
+                     epsilon=use_epsilon)
     benchmark_reward = compute_avg_reward(eval_env, agent.random_policy,
                                           eval_eps)
     buffer = DqnReplayBuffer(max_size=max_replay_history)
     max_avg_reward = 0.0
-    visualizer = get_training_visualizer(visualizer_type=visualizer_type)
     for eps_cnt in range(num_iterations):
-        collect_episode(train_env, agent.policy, buffer, render_option)
+        collect_episode(train_env, agent.collect_policy, buffer, render_option)
         if buffer.can_sample_batch(batch_size):
             state_batch, next_state_batch, action_batch, reward_batch, done_batch = \
                 buffer.sample_batch(batch_size=batch_size)
@@ -71,7 +76,10 @@ def train_model(
                                reward_batch=reward_batch, done_batch=done_batch,
                                batch_size=batch_size)
             visualizer.log_loss(loss=loss)
-            avg_reward = compute_avg_reward(eval_env, agent.policy, eval_eps)
+            use_eval_eps = eval_eps
+            if visualizer_type == 'streamlit':
+                use_eval_eps = visualizer.get_ui_feedback()['eval_eps']
+            avg_reward = compute_avg_reward(eval_env, agent.policy, num_episodes=use_eval_eps)
             visualizer.log_reward(reward=[avg_reward])
             if avg_reward > max_avg_reward:
                 max_avg_reward = avg_reward
@@ -87,7 +95,10 @@ def train_model(
         else:
             if verbose != 'none':
                 print('Not enough sample, skipping...')
-        if eps_cnt % target_network_update_frequency == 0:
+        used_target_network_update_frequency = target_network_update_frequency
+        if visualizer_type == 'streamlit':
+            used_target_network_update_frequency = visualizer.get_ui_feedback()['update_freq']
+        if eps_cnt % used_target_network_update_frequency == 0:
             agent.update_target_network()
     train_env.close()
     eval_env.close()

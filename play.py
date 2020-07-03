@@ -46,7 +46,7 @@ def test_model(
                      checkpoint_location=checkpoint_location,
                      model_location=model_location,
                      persist_progress_option=persist_progress_option,
-                     mode='test')
+                     mode='test', epsilon=0)
     avg_reward = utils.play_episodes(env=test_env, policy=agent.random_policy,
                                      render_option=render_option, num_eps=eval_eps,
                                      pause_time=pause_time, min_steps=min_steps)
