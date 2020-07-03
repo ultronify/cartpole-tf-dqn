@@ -30,6 +30,7 @@ def train_model(
     """
     Trains a DQN agent by playing episodes of the Cart Pole game
 
+    :param epsilon: epsilon is the probability that a random action is chosen
     :param target_network_update_frequency: how frequent target Q network gets updates
     :param num_iterations: the number of episodes the agent will play
     :param batch_size: the training batch size

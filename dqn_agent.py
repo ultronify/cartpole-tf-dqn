@@ -165,10 +165,10 @@ class DqnAgent:
 
         :return: action
         """
+        # pylint: disable=no-member
         if np.random.random() < self.epsilon:
             return self.random_policy(state=state)
-        else:
-            return self.policy(state=state)
+        return self.policy(state=state)
 
     def policy(self, state):
         """

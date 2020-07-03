@@ -4,6 +4,7 @@ Utilities
 import time
 
 
+# pylint: disable=too-many-arguments
 def play_episodes(env, policy, render_option, num_eps, pause_time, min_steps):
     """
     Play episodes with the given policy
@@ -56,6 +57,7 @@ def play_episode(env, policy, render_option, min_steps):
     return episode_reward
 
 
+# pylint: disable=too-many-arguments
 def collect_steps(env, policy, buffer, render_option, current_state, n_steps):
     """
     Collects a single step from the game environment with policy specified. It is
