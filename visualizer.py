@@ -1,7 +1,7 @@
 """
 Training progress visualizer
 """
-
+import time
 from abc import ABC, abstractmethod
 
 
@@ -24,6 +24,7 @@ class TrainingVisualizer(ABC):
     """
     Base training visualizer
     """
+
     @abstractmethod
     def log_loss(self, loss):
         """
@@ -44,11 +45,21 @@ class TrainingVisualizer(ABC):
         """
         return
 
+    @abstractmethod
+    def get_ui_feedback(self):
+        """
+        Gets the configuration from UI
+
+        :return: None
+        """
+        return
+
 
 class DummyTrainingVisualizer(TrainingVisualizer):
     """
     Used when no logging is required
     """
+
     def log_loss(self, loss):
         """
         A dummy logger that does nothing
@@ -56,7 +67,7 @@ class DummyTrainingVisualizer(TrainingVisualizer):
         :param loss: a list of loss history
         :return: None
         """
-        return
+        return None
 
     def log_reward(self, reward):
         """
@@ -65,13 +76,22 @@ class DummyTrainingVisualizer(TrainingVisualizer):
         :param reward: a list of reward history
         :return: None
         """
-        return
+        return None
+
+    def get_ui_feedback(self):
+        """
+        A dummy logger that does nothing
+
+        :return: None
+        """
+        return None
 
 
 class StreamlitTrainingVisualizer(TrainingVisualizer):
     """
     Used when runs with stream lit
     """
+
     def __init__(self):
         """
         Initializes the streamlit dashboard with elements
@@ -82,8 +102,17 @@ class StreamlitTrainingVisualizer(TrainingVisualizer):
         self.loss_history = []
         self.reward_history = []
         # pylint: disable=no-value-for-parameter
-        st.title('Training progress for tf2 cart pole experiment')
+        st.sidebar.text('Cart Pole DQN Training (TensorFlow 2.0)')
+        start_bar = st.sidebar.progress(0)
+        for percent_complete in range(100):
+            time.sleep(0.02)
+            start_bar.progress(percent_complete + 1)
+        self.update_freq = st.sidebar.slider('Update frequency', 0, 500, 120)
+        self.epsilon = float(st.sidebar.slider('Epsilon', 0, 100, 10)) / 100.0
+        self.eval_eps = st.sidebar.slider('Eval episodes', 0, 100, 10)
+        st.text('Training loss history')
         self.loss_chart = st.line_chart(self.loss_history)
+        st.text('Average reward history')
         self.reward_chart = st.line_chart(self.reward_history)
 
     def log_loss(self, loss):
@@ -103,3 +132,15 @@ class StreamlitTrainingVisualizer(TrainingVisualizer):
         :return:
         """
         self.reward_chart.add_rows(reward)
+
+    def get_ui_feedback(self):
+        """
+        Gets the user defined config from the UI
+
+        :return: config
+        """
+        return {
+            'update_freq': self.update_freq,
+            'epsilon': self.epsilon,
+            'eval_eps': self.eval_eps,
+        }
