@@ -31,8 +31,10 @@ jobs:
     - name: Lint
       run: |
         pylint \
-          train.py train_test.py dqn_agent.py entrypoint.py replay_buffer.py utils.py visualizer.py
+          train.py train_test.py dqn_agent.py entrypoint.py \
+          replay_buffer.py utils.py visualizer.py
     - name: Test
       run: |
         python -m unittest \
-          train_test.TestTrain.test_sanity_check
+          train_test.TestTrain.test_sanity_check \
+          play_test.TestPlay.test_sanity_check
