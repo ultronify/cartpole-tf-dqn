@@ -1,5 +1,5 @@
 gym==0.17.2
-numpy==1.19.0
+numpy==1.19.1
 tensorflow==2.2.0
 streamlit==0.63.1
 pylint==2.5.3
