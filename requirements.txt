@@ -1,7 +1,7 @@
 gym==0.17.2
 numpy==1.19.1
 tensorflow==2.3.0
-streamlit==0.64.0
+streamlit==0.65.0
 pylint==2.5.3
 Sphinx==3.2.0
 sphinx-rtd-theme==0.5.0
