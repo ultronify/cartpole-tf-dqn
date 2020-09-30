@@ -1,4 +1,4 @@
-gym==0.17.2
+gym==0.17.3
 numpy==1.19.1
 tensorflow==2.3.0
 streamlit==0.65.2
