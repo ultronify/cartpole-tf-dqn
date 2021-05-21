@@ -1,6 +1,6 @@
 gym==0.17.2
 numpy==1.19.1
-tensorflow==2.3.0
+tensorflow==2.5.0
 streamlit==0.65.2
 pylint==2.6.0
 Sphinx==3.2.1
